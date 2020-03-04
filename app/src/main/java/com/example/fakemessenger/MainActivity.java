@@ -3,15 +3,17 @@ package com.example.fakemessenger;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.fakemessenger.chat.ChatListFragment;
+import com.example.fakemessenger.firebase.CurrentFirebaseUser;
+import com.example.fakemessenger.user.User;
 import com.example.fakemessenger.user.UsersListFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -34,12 +37,13 @@ import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getName();
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
     private static final int NUM_PAGES = 2;
 //    private static final String[] TITLES = {"Chat", "Users"};
-    private static final Fragment[] FRAGMENTS = {new ChatListFragment(), new UsersListFragment()};
+    private static final Fragment[] FRAGMENTS = new Fragment[2];
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
@@ -55,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FRAGMENTS[0] = new ChatListFragment();
+        FRAGMENTS[1] = new UsersListFragment();
+
+        Log.d(TAG, CurrentFirebaseUser.getCurrentUser().getUid());
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = findViewById(R.id.view_pager);
@@ -76,11 +85,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        BottomAppBar appBar = findViewById(R.id.activity_main_bottom_appBar);
-        setSupportActionBar(appBar);
+        Toolbar toolbar = findViewById(R.id.activity_main_toolbar);
+        setSupportActionBar(toolbar);
 
     }
-
 
     @Override
     public void onBackPressed() {
@@ -148,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
                 signOut();
                 break;
         }
-
         return true;
     }
 
@@ -160,16 +167,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(getApplicationContext()
                                 , "signed out", Toast.LENGTH_LONG).show();
-                        //delete user from SharedPreferences
-                        SharedPreferences mPrefs = getSharedPreferences("prefs", MODE_PRIVATE);
-                        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-                        prefsEditor.remove("current_user");
-                        prefsEditor.commit();
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                     }
                 });
-
-
     }
 
 }

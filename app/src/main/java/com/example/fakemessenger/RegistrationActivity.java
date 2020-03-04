@@ -26,9 +26,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,7 +49,10 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
 
         progressBar = findViewById(R.id.activity_registration_progress_bar);
@@ -72,10 +78,12 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+
+
     private void openFileChooser() {
         Intent intent = new Intent();
-        intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE);
     }
 
@@ -90,7 +98,7 @@ public class RegistrationActivity extends AppCompatActivity {
             //
             //put mImageUri to Firebase Storage with file extension
             final StorageReference pictureReference = FirebaseDB.getStorageReference()
-                    .child(System.currentTimeMillis() + "." + getFileExtension(mImageUri));
+                    .child(System.currentTimeMillis()+"");
             pictureReference.putFile(mImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -154,18 +162,48 @@ public class RegistrationActivity extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK
                 && data != null && data.getData() != null) {
-            mImageUri = data.getData();
 
-            Picasso.with(this).load(mImageUri).into(profileImageView);
+            CropImage.activity()
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1,1)
+                    .start(this);
+        }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                try {
+                    mImageUri = result.getUri();
+                    Picasso.with(this).load(mImageUri).into(profileImageView);
+                }catch (Error e){
+                    e.printStackTrace();
+                }
+
 
         }
     }
 
 
-    private String getFileExtension(Uri uri) {
-        ContentResolver cR = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
-    }
+//    private String getFileExtension(Uri uri) {
+//        ContentResolver cR = getContentResolver();
+//        MimeTypeMap mime = MimeTypeMap.getSingleton();
+//        return mime.getExtensionFromMimeType(cR.getType(uri));
+//    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AuthUI.getInstance()
+                .signOut(getApplicationContext())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplicationContext()
+                                , "Registration terminated", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(RegistrationActivity.this,
+                                LoginActivity.class));
+                        finish();
+                    }
+                });
+
+    }
 }

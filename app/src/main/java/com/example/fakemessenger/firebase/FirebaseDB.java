@@ -8,6 +8,8 @@ import com.google.firebase.storage.StorageReference;
 public class FirebaseDB {
     public static final String USERS_KEY = "users";
     public static final String CHATS_KEY = "chats";
+    public static final String MESSAGES_KEY = "messages";
+
 
     public static final DatabaseReference getDatabaseReference(){
         return FirebaseDatabase.getInstance().getReference();

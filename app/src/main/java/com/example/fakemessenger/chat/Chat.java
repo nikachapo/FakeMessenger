@@ -10,6 +10,7 @@ public class Chat {
     private String user1ProfilePictureURL;
     private String user2ProfilePictureURL;
     private long lastMessageTimeInMillis;
+    private boolean lastMessageSeen;
 
 
     public Chat(){
@@ -94,6 +95,14 @@ public class Chat {
 
     public long getLastMessageTimeInMillis() {
         return lastMessageTimeInMillis;
+    }
+
+    public boolean isLastMessageSeen() {
+        return lastMessageSeen;
+    }
+
+    public void setLastMessageSeen(boolean lastMessageSeen) {
+        this.lastMessageSeen = lastMessageSeen;
     }
 
     public void setLastMessageTimeInMillis(long lastMessageTimeInMillis) {

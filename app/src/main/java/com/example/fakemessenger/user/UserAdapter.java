@@ -52,6 +52,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         Picasso.with(context).load(user.getImageUrl())
                 .resize(50, 50)
+                .placeholder(R.drawable.ic_loop_black_24dp)
                 .into(holder.userImageView, new Callback() {
                     @Override
                     public void onSuccess() {

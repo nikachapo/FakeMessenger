@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/message_item_root_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    app:cardBackgroundColor="@color/colorTransparent"
+    app:cardElevation="0dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent">
+
+        <ImageView
+            android:id="@+id/message_item_profile_image"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_account_circle_black_24dp"
+            android:visibility="invisible"/>
+
+
+        <TextView
+            android:id="@+id/message_item_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="36dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/message_item_profile_image"
+            android:background="@drawable/message_item_background_receiver"
+            android:padding="8dp"
+            tools:text="asofmamvapomvpoemva"
+            android:textColor="@android:color/white" />
+
+
+        <TextView
+            android:id="@+id/message_item_time_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_below="@id/message_item_message"
+            android:layout_marginStart="32dp"
+            tools:text="00:44"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

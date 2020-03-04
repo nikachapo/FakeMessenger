@@ -7,6 +7,7 @@
     tools:context=".RegistrationActivity"
     android:padding="16dp"
     android:orientation="vertical"
+    android:gravity="center"
     >
 
 
@@ -22,6 +23,7 @@
         />
 
     <ProgressBar
+        android:layout_margin="16dp"
         android:visibility="invisible"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -39,14 +41,16 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="username"/>
+            android:hint="@string/username"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/activity_registration_next_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="next>"
+        android:background="@drawable/button_background"
+        android:text="@string/next"
+        android:textColor="@android:color/white"
         />
     
     

@@ -2,8 +2,15 @@ package com.example.fakemessenger;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.fakemessenger.firebase.CurrentFirebaseUser;
@@ -31,6 +38,9 @@ public class LoginActivity extends AppCompatActivity {
     private static final int MY_REQUEST_CODE = 17;
     private List<AuthUI.IdpConfig> providers;
 
+    private Button retryButton;
+    private ImageView loginIcon;
+    private ProgressBar loginProgress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,26 +49,51 @@ public class LoginActivity extends AppCompatActivity {
         providers = Arrays.asList(new AuthUI.IdpConfig.PhoneBuilder().build(),
                 new AuthUI.IdpConfig.EmailBuilder().build());
 
+        loginIcon = findViewById(R.id.login_icon);
+        loginProgress = findViewById(R.id.login_progress);
+
+        retryButton = findViewById(R.id.retry_button);
+        retryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retryButton.setVisibility(View.INVISIBLE);
+                loginProgress.setVisibility(View.VISIBLE);
+                checkInternetConnection();
+            }
+        });
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (CurrentFirebaseUser.getCurrentUser() == null) {
-            Log.d(TAG, "User is null - showing sign in options");
-            showSignInOption();
-        } else {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            if (user != null) {
-                FirebaseDB.getDatabaseReference()
-                        .child(FirebaseDB.USERS_KEY)
-                        .child(CurrentFirebaseUser.getCurrentUser().getUid())
-                        .addListenerForSingleValueEvent(checkIfUserExistsListener);
-            }
-        }
+        checkInternetConnection();
+
     }
 
+    private void checkInternetConnection() {
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        if(networkInfo != null && networkInfo.isConnected()) {
+            if (CurrentFirebaseUser.getCurrentUser() == null) {
+                Log.d(TAG, "User is null - showing sign in options");
+                showSignInOption();
+            } else {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    FirebaseDB.getDatabaseReference()
+                            .child(FirebaseDB.USERS_KEY)
+                            .child(CurrentFirebaseUser.getCurrentUser().getUid())
+                            .addListenerForSingleValueEvent(checkIfUserExistsListener);
+                }
+            }
+        }else{
+            loginIcon.setImageResource(R.drawable.no_internet_icon);
+            retryButton.setVisibility(View.VISIBLE);
+            loginProgress.setVisibility(View.GONE);
+        }
+    }
 
 
     @Override
@@ -93,7 +128,10 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
                 finish();
             } else {
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+//                User currentUser = dataSnapshot.getValue(User.class);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                intent.putExtra("currentUser",currentUser);
+                startActivity(intent);
                 finish();
             }
 

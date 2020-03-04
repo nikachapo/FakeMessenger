@@ -6,7 +6,9 @@
     android:layout_marginTop="8dp"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
-    android:id="@+id/chat_item_root_layout">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat_item_root_layout"
+    app:cardElevation="8dp">
 
 
 
@@ -33,7 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
-            android:text="username"
+            tools:text="username"
+            android:textColor="@color/textColorBlack"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -49,9 +52,10 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
-            android:text="last message"
-            android:textSize="20sp"
+            tools:text="last message"
             android:textStyle="italic"
+            android:textSize="20sp"
+            android:textColor="@color/textColorGray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.041"
@@ -65,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="10dp"
-            android:text="00:22"
+            tools:text="00:22"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
